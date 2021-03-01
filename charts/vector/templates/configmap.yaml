@@ -23,4 +23,3 @@ data:
         address: 0.0.0.0:{{ .Values.metrics.port }}
       {{ end }}
       {{- toYaml .Values.sinks | nindent 6 }}
-
