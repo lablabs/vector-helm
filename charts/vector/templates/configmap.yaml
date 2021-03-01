@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "vector.fullname" . }}
+  labels:
+    {{- include "vector.labels" . | nindent 4 }}
+data:
+  vector.yml: |-
+    api:
+      enabled: true
+      address: 127.0.0.1:8686
+    sources:
+      {{- if .Values.metrics.enabled }}
+      prometheus_in:
+        type: "internal_metrics"
+      {{ end }}
+      {{- toYaml .Values.sources | nindent 6 }}
+    sinks:
+      {{- if .Values.metrics.enabled }}
+      prometheus_out:
+        type: "prometheus_exporter"
+        inputs: ["prometheus_in"]
+        address: 0.0.0.0:{{ .Values.metrics.port }}
+      {{ end }}
+      {{- toYaml .Values.sinks | nindent 6 }}
+

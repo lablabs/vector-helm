@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vector.fullname" . }}
+  labels:
+    {{- include "vector.labels" . | nindent 4 }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+  - name: api
+    targetPort: api
+    port: {{ .Values.service.port }}
+    protocol: TCP
+  {{- if .Values.metrics.enabled }}
+  - name: metrics
+    targetPort: {{ .Values.metrics.port }}
+    protocol: TCP
+    port: {{ .Values.metrics.port }}
+  {{- end }}
+  selector:
+    {{- include "vector.selectorLabels" . | nindent 4 }}
+  topologyKeys:
+    {{- toYaml .Values.service.topologyKeys | nindent 4 }}
+---
+{{ $dot:= . }}
+{{- range .Values.additionalServices }}
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "vector.fullname" $dot }}-{{ .name }}
+  labels:
+    {{- include "vector.labels" $dot | nindent 4 }}
+spec:
+  type: {{ $dot.Values.service.type }}
+  ports:
+  - name: {{ .name }}
+    targetPort: {{ .port }}
+    port: {{ .port }}
+    protocol: {{ .protocol }}
+  selector:
+    {{- include "vector.selectorLabels" $dot | nindent 4 }}
+  topologyKeys:
+    {{- toYaml $dot.Values.service.topologyKeys | nindent 4 }}
+---
+{{- end }}

@@ -1,0 +1,96 @@
+
+image:
+  repository: timberio/vector
+  pullPolicy: IfNotPresent
+  tag: 0.11.1-alpine
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  # Specifies whether a service account should be created
+  create: true
+  # Annotations to add to the service account
+  annotations: {}
+  # The name of the service account to use.
+  # If not set and create is true, a name is generated using the fullname template
+  name: ""
+
+podAnnotations: {}
+
+podSecurityContext: {}
+  # fsGroup: 2000
+
+securityContext: {}
+  # capabilities:
+  #   drop:
+  #   - ALL
+  # readOnlyRootFilesystem: true
+  # runAsNonRoot: true
+  # runAsUser: 1000
+
+service:
+  type: ClusterIP
+  port: 80
+  topologyKeys:
+    - "kubernetes.io/hostname"
+    - "topology.kubernetes.io/zone"
+    - "topology.kubernetes.io/region"
+    - "*"
+
+resources: {}
+  # We usually recommend not to specify default resources and to leave this as a conscious
+  # choice for the user. This also increases chances charts run on environments with little
+  # resources, such as Minikube. If you do want to specify resources, uncomment the following
+  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations: []
+
+affinity: {}
+
+metrics:
+  enabled: true
+  port: 9598
+  serviceMonitor:
+    enabled: true
+
+additionalServices: []
+# - name: http-in
+#   port: 8081
+#   protocol: TCP
+# - name: udp-in
+#   port: 8082
+#   protocol: UDP
+
+sources: {}
+  # http_in:
+  #   type: http
+  #   address: 0.0.0.0:8081
+  #   encoding: text
+  # udp_in:
+  #   type: socket
+  #   mode: udp
+  #   address: 0.0.0.0:8082
+
+sinks: {}
+  # kafka_out:
+  #   type: kafka
+  #   inputs: ["http_in", "udp_in"]
+  #   bootstrap_servers: "1.2.3.4:9092,1.2.3.4:9092"
+  #   compression: none
+  #   key_field: none
+  #   topic: xyz
+  #   encoding:
+  #     codec: text
+  #   buffer:
+  #     type: disk
+  #     max_size: 1000000
