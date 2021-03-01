@@ -1,4 +1,3 @@
-
 image:
   repository: timberio/vector
   pullPolicy: IfNotPresent
