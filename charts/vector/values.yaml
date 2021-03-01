@@ -60,7 +60,7 @@ metrics:
   enabled: true
   port: 9598
   serviceMonitor:
-    enabled: true
+    enabled: false
 
 additionalServices: []
 # - name: http-in
